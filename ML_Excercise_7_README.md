@@ -6,8 +6,6 @@ Images from four conditions (sunny, fog, night, and a different town layout) are
 Google Colab, plus torch, torchvision, pandas, numpy, matplotlib, Pillow, and scikit-learn (for NearestNeighbors and AUROC calculation).
 ## Dataset location
 /content/drive/MyDrive/carla_dataset/, containing test.zip, test-fog.zip, test-night.zip, and test-town-01.zip, plus the saved model files traffic_light_model.pth, pedestrian_model.pth, and vehicle_model.pth from Exercise 4.
-# How to run
-Open in Colab, mount Drive, and run all cells top to bottom.
 ## Output
 **Dataset checks:** file/folder listings confirm each zip extracted correctly, and the number of images found in each condition folder (sunny, fog, night, town) is printed after listing filenames.
 
