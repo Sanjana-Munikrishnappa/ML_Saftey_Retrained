@@ -1,6 +1,7 @@
 # ML Safety – CARLA Perception Models
 
-This project was submitted by Your Name (Student ID: Optional) for the course Your Course Name at Your University Name.
+This project was submitted by Sanjana Munikrishnappa  **Matriculation number**: 261187 for the **Course**: Data and Knowledge Engineering 
+ at **University**: Otto von Guericke University.
 
 
 
