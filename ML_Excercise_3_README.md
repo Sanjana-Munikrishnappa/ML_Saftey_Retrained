@@ -22,4 +22,14 @@ Google Colab, plus torch, torchvision, pandas, pyarrow, matplotlib, and Pillow.
 Open in Colab, adjust dataset_path if needed, and run all cells top to bottom.
 
 ## Output
-For each of the three models: per-epoch training loss, a final validation accuracy, and a loss-curve plot. Weights stay in memory only — they aren't saved to disk.
+Running the notebook produces output at several stages, mostly printed to the console or shown as inline plots — nothing is saved to disk unless you add that yourself.
+
+**During data exploration:** the number of samples in each split (train/validation/test) is printed, along with the column names in the labels table. Bar charts show the positive vs. negative count for each label (has_traffic_light, has_pedestrian, has_vehicle), and a row of sample images is displayed from the training folder.
+
+**During training (repeated once per model):** each of the 3 epochs prints one line showing the average loss for that epoch, for example Epoch 1/3, Loss: 0.3618. Watching these three numbers drop across epochs is how you tell the model is learning — a loss that stays flat or increases means something's off with training.
+
+**During validation (repeated once per model):** a single line is printed with the model's accuracy on unseen validation data, for example Validation Accuracy: 91.42%. This is calculated by running every validation image through the trained model, converting its output into a 0-or-1 prediction, and checking what fraction match the true labels.
+
+**At the end:** a loss-curve plot is shown for each of the three models — epoch number on the x-axis, loss on the y-axis. A smoothly descending line means healthy training; a jagged or flat one suggests the model struggled.
+
+**What you're left with:** three trained models (traffic light, pedestrian, vehicle), each with its own loss numbers, one validation accuracy score, and one loss plot — but only in the Colab session's memory. If you want to keep a model beyond that session, you'd need to add code to save its state_dict to a file.
