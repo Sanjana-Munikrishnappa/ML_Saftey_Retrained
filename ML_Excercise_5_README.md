@@ -1,0 +1,20 @@
+# ML Exercise 5 — Confidence Calibration & Backdoor Attack Demo (ML Safety)
+This notebook is a machine learning safety exercise in two parts. Instead of training a full detector from scratch, it uses a small placeholder PedestrianDetector model (loading saved weights from Exercise 4 if available) to explore two safety-relevant ideas: how confidence scores can be manipulated, and how a model can be secretly poisoned to misbehave on a specific trigger.
+## Part 1: Temperature scaling and confidence thresholds
+The notebook applies "temperature scaling" to the model's output — dividing its raw logits by a temperature value T before passing them through a sigmoid — at three settings: 0.5, 1.0, and 2.0. This changes how confident the model's probabilities look without changing its actual predictions. Histograms are plotted for each temperature, showing that low T pushes probabilities toward the extremes (0 or 1, i.e. falsely confident), while high T pulls them toward 0.5 (more cautious).
+
+The notebook then reasons through a safety scenario: a rule like "if confidence is below 0.6, reduce speed." It explains that a low temperature can make the model look confident even when it's unsure, potentially preventing this safety rule from triggering when it should — while a high temperature makes the rule trigger more often, erring on the side of caution. It also notes that accuracy alone doesn't tell you whether confidence scores can be trusted; calibration metrics (like Expected Calibration Error) are needed to check whether a "0.8 confidence" prediction is actually right 80% of the time.
+## Part 2: Backdoor attack demonstration
+The second part shows, in a simplified/toy form, how a model can be poisoned during training. An add_trigger function overlays a small bright red square onto an image. A PoisonedDataset class wraps the training data and, for 10% of images that truly contain a pedestrian, applies this trigger and flips the label to "no pedestrian." Since the real dataset folder isn't available in this notebook, dummy random-noise images are generated to stand in for training data so the retraining loop can run.
+
+The model is then briefly retrained on this poisoned data, teaching it to associate the red-square trigger with "no pedestrian," even though a person is actually present. The notebook then evaluates this backdoored model with two metrics: Clean Recall (how well it still detects pedestrians in normal, untriggered images) and Attack Success Rate, or ASR (how often the red-square trigger successfully fools it into saying "no pedestrian" when one is present). The goal of this exercise is to illustrate the concept and evaluation methodology of a backdoor attack, not to produce a real working attack.
+## Requirements
+Google Colab, plus torch, torchvision, numpy, matplotlib, seaborn, scikit-learn, and Pillow.
+## Dataset location
+/content/drive/MyDrive/carla_dataset/, ideally containing the test folder and a previously saved pedestrian_model.pth (from Exercise 4). If the training folder is missing, the notebook generates dummy images automatically so the poisoning demo can still run.
+## How to run
+Open in Colab, mount Drive, and run all cells top to bottom. If a saved pedestrian model isn't found, the notebook falls back to an untrained placeholder model so the exercise can still complete.
+## Output
+**From the temperature scaling section:** a printed accuracy value for each temperature (0.5, 1.0, 2.0), and a set of three side-by-side histograms showing how the predicted-probability distribution shifts — spread out and centered near 0.5 for high temperature, pushed toward the extremes for low temperature.
+
+**From the backdoor attack section:** two final numbers — Clean Recall and Attack Success Rate (ASR) — printed after evaluation. Clean Recall close to the original model's performance means the backdoor is well hidden; a high ASR means the red-square trigger reliably fools the model. Together, these two numbers show the core trade-off in a backdoor attack: the model still works normally most of the time, but fails in a very specific, attacker-chosen way when the trigger appears.
